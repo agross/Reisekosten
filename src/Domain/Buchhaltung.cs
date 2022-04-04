@@ -8,19 +8,10 @@ public class Buchhaltung : IEnumerable<Reise>
 
   public void ErfasseReise(Reisekostenformular formular, ISystemClock clock)
   {
-    EndeDerReiseMussNachReiseBeginnLiegen(formular.Anfang, formular.Ende);
     ReisenDesVorjahresMüssenBis10JanuarErfasstWerden(formular.Ende, clock);
     ReiseMussDieEinzigeImZeitraumSein(formular.Anfang, formular.Ende);
 
     _reisen.Add(new Reise(formular));
-  }
-
-  void EndeDerReiseMussNachReiseBeginnLiegen(DateTime anfang, DateTime ende)
-  {
-    if (ende < anfang)
-    {
-      throw new EndeDerReiseMussNachReisebeginnLiegen();
-    }
   }
 
   void ReiseMussDieEinzigeImZeitraumSein(DateTime anfang, DateTime ende)
