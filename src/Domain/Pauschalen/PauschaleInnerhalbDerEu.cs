@@ -1,6 +1,6 @@
-namespace Domain;
+namespace Domain.Pauschalen;
 
-class PauschaleInnerhalbDerEu
+class PauschaleInnerhalbDerEu : IPauschalenStrategy
 {
   static readonly Dictionary<Func<TimeSpan, bool>, decimal> ZeitZuPauschalen = new()
   {
@@ -9,7 +9,7 @@ class PauschaleInnerhalbDerEu
     { ts => ts >= TimeSpan.FromHours(8), 6 },
   };
 
-  internal static decimal Berechnen(IEnumerable<(DateTime anfang, DateTime ende)> tageweise)
+  public decimal Berechnen(IEnumerable<(DateTime anfang, DateTime ende)> tageweise)
   {
     return tageweise.Aggregate(0m,
                                (pauschale, tag) =>

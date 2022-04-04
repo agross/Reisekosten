@@ -1,11 +1,12 @@
+using Domain.Pauschalen;
+
 namespace Domain;
 
 public record Reise(Reisekostenformular Formular)
 {
   public decimal Pauschale(ITranslateCitiesToEuCountries geo)
-  {
-    return PauschaleInnerhalbDerEu.Berechnen(Tageweise());
-  }
+    => new PauschalenStrategyFactory().Resolve(geo, Formular.Zielort)
+                                      .Berechnen(Tageweise());
 
   IEnumerable<(DateTime anfang, DateTime ende)> Tageweise()
   {
