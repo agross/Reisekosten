@@ -1,0 +1,15 @@
+﻿[
+  {
+    Ende: 0001-01-02,
+    Zielort: Berlin,
+    Grund: Republica,
+    Pauschale: 24.0
+  },
+  {
+    Anfang: 0001-01-02,
+    Ende: 0001-01-03,
+    Zielort: Leipzig,
+    Grund: Developer Open Space,
+    Pauschale: 24.0
+  }
+]

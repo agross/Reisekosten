@@ -1,6 +1,8 @@
+using System.Collections;
+
 namespace Domain;
 
-public class Bericht
+public class Bericht : IEnumerable<ReisePauschale>
 {
   readonly List<ReisePauschale> _pauschalen = new();
 
@@ -16,4 +18,10 @@ public class Bericht
       return _pauschalen.Sum(p => p.Pauschale);
     }
   }
+
+  public IEnumerator<ReisePauschale> GetEnumerator()
+    => _pauschalen.GetEnumerator();
+
+  IEnumerator IEnumerable.GetEnumerator()
+    => ((IEnumerable) _pauschalen).GetEnumerator();
 }

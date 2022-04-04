@@ -1,7 +1,5 @@
 using FluentAssertions;
 
-using NUnit.Framework;
-
 namespace Domain.Tests;
 
 [TestFixture]
@@ -102,6 +100,36 @@ public class AuswertungTests : ISystemClock
     bericht.Summe
            .Should()
            .Be(6 + 24 + 12);
+  }
+
+  [Test]
+  public Task Soll_Reisedaten_im_Bericht_inkludieren()
+  {
+    var reise1 = new Reisekostenformular(DateTime.MinValue,
+                                         DateTime.MinValue.AddDays(1),
+                                         "Berlin",
+                                         "Republica");
+    var reise2 = new Reisekostenformular(DateTime.MinValue.AddDays(1),
+                                         DateTime.MinValue.AddDays(2),
+                                         "Leipzig",
+                                         "Developer Open Space");
+
+    var buchhaltung = new Buchhaltung();
+    buchhaltung.ErfasseReise(reise1, this);
+    buchhaltung.ErfasseReise(reise2, this);
+
+    var bericht = Auswerten(buchhaltung);
+
+    bericht.Should().HaveCount(2);
+    bericht.First().Zielort.Should().Be("Berlin");
+    bericht.First().Grund.Should().Be("Republica");
+
+    // For more complex data structures, Verify is a good tool.
+    VerifierSettings.TreatAsString<DateTime>((dt, _) => dt.ToString("O"));
+
+    return Verify(bericht)
+      .ModifySerialization(_ => _.DontScrubDateTimes());
+
   }
 
   static Bericht Auswerten(Buchhaltung buchhaltung)
