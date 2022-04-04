@@ -6,13 +6,13 @@ public class Buchhaltung : IEnumerable<Reise>
 {
   readonly List<Reise> _reisen = new();
 
-  public void ErfasseReise(DateTime anfang, DateTime ende, ISystemClock clock)
+  public void ErfasseReise(Reisekostenformular formular, ISystemClock clock)
   {
-    EndeDerReiseMussNachReiseBeginnLiegen(anfang, ende);
-    ReisenDesVorjahresMüssenBis10JanuarErfasstWerden(ende, clock);
-    ReiseMussDieEinzigeImZeitraumSein(anfang, ende);
+    EndeDerReiseMussNachReiseBeginnLiegen(formular.Anfang, formular.Ende);
+    ReisenDesVorjahresMüssenBis10JanuarErfasstWerden(formular.Ende, clock);
+    ReiseMussDieEinzigeImZeitraumSein(formular.Anfang, formular.Ende);
 
-    _reisen.Add(new Reise(anfang, ende));
+    _reisen.Add(new Reise(formular));
   }
 
   void EndeDerReiseMussNachReiseBeginnLiegen(DateTime anfang, DateTime ende)
@@ -25,7 +25,8 @@ public class Buchhaltung : IEnumerable<Reise>
 
   void ReiseMussDieEinzigeImZeitraumSein(DateTime anfang, DateTime ende)
   {
-    if (this.Any(reise => reise.Anfang <= anfang && reise.Ende >= ende))
+    if (this.Any(reise => reise.Formular.Anfang <= anfang &&
+                          reise.Formular.Ende >= ende))
     {
       throw new ZuEinemZeitpunktDarfNurEineReiseErfasstWerden();
     }

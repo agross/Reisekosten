@@ -6,8 +6,6 @@ using NUnit.Framework;
 
 namespace Domain.Tests;
 
-public record Reisekostenformular(DateTime Anfang, DateTime Ende, string Zielort, string Grund);
-
 [TestFixture]
 public class ErfassungTests : ISystemClock
 {
@@ -95,6 +93,6 @@ public class ErfassungTests : ISystemClock
 
   void Erfasse(Reisekostenformular formular, ISystemClock clock)
   {
-    _buchhaltung.ErfasseReise(formular.Anfang, formular.Ende, clock);
+    _buchhaltung.ErfasseReise(formular, clock);
   }
 }
