@@ -15,17 +15,11 @@ public record Reise(Reisekostenformular Formular)
     {
       return Tageweise(Formular)
         .Aggregate(0m,
-                   (pauschale1, tag) =>
+                   (pauschale, tag) =>
                    {
-                     foreach (var (predicate, summe) in ZeitZuPauschalen)
-                     {
-                       if (predicate(Dauer(tag)))
-                       {
-                         return pauschale1 + summe;
-                       }
-                     }
+                     var match = ZeitZuPauschalen.FirstOrDefault(kvp => kvp.Key(Dauer(tag)));
 
-                     return 0;
+                     return pauschale + match.Value;
                    });
     }
   }
