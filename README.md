@@ -13,3 +13,12 @@ muss ich die Dauer meiner Geschäftsreisen erfassen.
 
 Damit die Buchhaltung den Jahresabschluss erstellen kann dürfen Reisen nur bis
 zum 10.01. des Folgejahres erfasst werden.
+
+## Auswertung
+
+Damit Mitarbeiter ihre Mehraufwände gesetzeskonform erstattet bekommen
+möchte ich als Buchhalter am Monatsende die Verpflegungspauschale berechnen
+lassen.
+
+* Ab 8 Stunden Abwesenheit erhält der Reisende täglich 6 €, ab 12 Stunden 12 € 
+  und ab 24 Stunden 24 €
