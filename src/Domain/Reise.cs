@@ -2,31 +2,14 @@ namespace Domain;
 
 public record Reise(Reisekostenformular Formular)
 {
-  static readonly Dictionary<Func<TimeSpan, bool>, decimal> ZeitZuPauschalen = new()
+  public decimal Pauschale(ITranslateCitiesToEuCountries geo)
   {
-    { ts => ts >= TimeSpan.FromHours(24), 24 },
-    { ts => ts >= TimeSpan.FromHours(12), 12 },
-    { ts => ts >= TimeSpan.FromHours(8), 6 },
-  };
-
-  public decimal Pauschale
-  {
-    get
-    {
-      return Tageweise(Formular)
-        .Aggregate(0m,
-                   (pauschale, tag) =>
-                   {
-                     var match = ZeitZuPauschalen.FirstOrDefault(kvp => kvp.Key(Dauer(tag)));
-
-                     return pauschale + match.Value;
-                   });
-    }
+    return PauschaleInnerhalbDerEu.Berechnen(Tageweise());
   }
 
-  IEnumerable<(DateTime anfang, DateTime ende)> Tageweise(Reisekostenformular formular)
+  IEnumerable<(DateTime anfang, DateTime ende)> Tageweise()
   {
-    var anfang = formular.Anfang;
+    var anfang = Formular.Anfang;
 
     do
     {
@@ -37,18 +20,15 @@ public record Reise(Reisekostenformular Formular)
                                      00,
                                      00);
 
-      if (mitternacht > formular.Ende)
+      if (mitternacht > Formular.Ende)
       {
-        mitternacht = formular.Ende;
+        mitternacht = Formular.Ende;
       }
 
       yield return (anfang, mitternacht);
 
       anfang = mitternacht;
     }
-    while (anfang < formular.Ende);
+    while (anfang < Formular.Ende);
   }
-
-  static TimeSpan Dauer((DateTime anfang, DateTime ende) tag)
-    => tag.ende - tag.anfang;
 }

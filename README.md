@@ -25,3 +25,7 @@ lassen.
 * Buchhalter erhalten einen tabellarischen Bericht über:
   * Reisen (Beginn, Zielort, Reisegrund) mit anfallender Verpflegungspauschale
   * Summe der Verpflegungspauschale im Bericht
+
+## Sonderbehandlung für Reisen außerhalb der EU
+
+Für Reisen außerhalb der EU werden 100 EUR pro Tag als Pauschale angesetzt.

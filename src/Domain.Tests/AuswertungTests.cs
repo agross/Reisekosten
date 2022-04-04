@@ -1,9 +1,11 @@
+using FakeItEasy;
+
 using FluentAssertions;
 
 namespace Domain.Tests;
 
 [TestFixture]
-public class AuswertungTests : ISystemClock
+public class AuswertungTests : ISystemClock, ITranslateCitiesToEuCountries
 {
   public DateTime Now => DateTime.MinValue;
 
@@ -19,7 +21,7 @@ public class AuswertungTests : ISystemClock
     var buchhaltung = new Buchhaltung();
     buchhaltung.ErfasseReise(formular, this);
 
-    var bericht = Auswerten(buchhaltung);
+    var bericht = Auswerten(buchhaltung, this);
 
     bericht.Summe
            .Should()
@@ -38,7 +40,7 @@ public class AuswertungTests : ISystemClock
     var buchhaltung = new Buchhaltung();
     buchhaltung.ErfasseReise(formular, this);
 
-    var bericht = Auswerten(buchhaltung);
+    var bericht = Auswerten(buchhaltung, this);
 
     bericht.Summe
            .Should()
@@ -57,7 +59,7 @@ public class AuswertungTests : ISystemClock
     var buchhaltung = new Buchhaltung();
     buchhaltung.ErfasseReise(formular, this);
 
-    var bericht = Auswerten(buchhaltung);
+    var bericht = Auswerten(buchhaltung, this);
 
     bericht.Summe
            .Should()
@@ -76,7 +78,7 @@ public class AuswertungTests : ISystemClock
     var buchhaltung = new Buchhaltung();
     buchhaltung.ErfasseReise(formular, this);
 
-    var bericht = Auswerten(buchhaltung);
+    var bericht = Auswerten(buchhaltung, this);
 
     bericht.Summe
            .Should()
@@ -95,7 +97,7 @@ public class AuswertungTests : ISystemClock
     var buchhaltung = new Buchhaltung();
     buchhaltung.ErfasseReise(formular, this);
 
-    var bericht = Auswerten(buchhaltung);
+    var bericht = Auswerten(buchhaltung, this);
 
     bericht.Summe
            .Should()
@@ -118,7 +120,7 @@ public class AuswertungTests : ISystemClock
     buchhaltung.ErfasseReise(reise1, this);
     buchhaltung.ErfasseReise(reise2, this);
 
-    var bericht = Auswerten(buchhaltung);
+    var bericht = Auswerten(buchhaltung, this);
 
     bericht.Should().HaveCount(2);
     bericht.First().Zielort.Should().Be("Berlin");
@@ -129,9 +131,31 @@ public class AuswertungTests : ISystemClock
 
     return Verify(bericht)
       .ModifySerialization(_ => _.DontScrubDateTimes());
-
   }
 
-  static Bericht Auswerten(Buchhaltung buchhaltung)
-    => buchhaltung.ErzeugeBericht();
+  [Test]
+  public void Soll_Reisen_außerhalb_der_EU_mit_100_EUR_pro_Tag_erstatten()
+  {
+    var anfang = DateTime.MinValue;
+    var ende = anfang;
+    var zielort = "egal";
+    var grund = "egal";
+    var formular = new Reisekostenformular(anfang, ende, zielort, grund);
+
+    var buchhaltung = new Buchhaltung();
+    buchhaltung.ErfasseReise(formular, this);
+
+    var geo = A.Fake<ITranslateCitiesToEuCountries>();
+    A.CallTo(() => geo.IsOutsideOfEu(A<string>.Ignored))
+     .Returns(true);
+
+    var bericht = Auswerten(buchhaltung, geo);
+
+    bericht.Summe
+           .Should()
+           .Be(100);
+  }
+
+  static Bericht Auswerten(Buchhaltung buchhaltung, ITranslateCitiesToEuCountries geo)
+    => buchhaltung.ErzeugeBericht(geo);
 }
