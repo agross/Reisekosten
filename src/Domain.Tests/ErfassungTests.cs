@@ -1,11 +1,13 @@
-﻿using FluentAssertions;
+﻿using FakeItEasy;
+
+using FluentAssertions;
 
 using NUnit.Framework;
 
 namespace Domain.Tests;
 
 [TestFixture]
-public class ErfassungTests
+public class ErfassungTests : ISystemClock
 {
   [SetUp]
   public void SetUp()
@@ -21,7 +23,7 @@ public class ErfassungTests
     var zielort = "egal";
     var grund = "egal";
 
-    Erfasse(anfang, ende, zielort, grund);
+    Erfasse(anfang, ende, zielort, grund, this);
   }
 
   [Test]
@@ -32,7 +34,7 @@ public class ErfassungTests
     var zielort = "egal";
     var grund = "egal";
 
-    FluentActions.Invoking(() => Erfasse(anfang, ende, zielort, grund))
+    FluentActions.Invoking(() => Erfasse(anfang, ende, zielort, grund, this))
                  .Should()
                  .Throw<EndeDerReiseMussNachReisebeginnLiegen>();
   }
@@ -45,22 +47,74 @@ public class ErfassungTests
     var zielort = "egal";
     var grund = "egal";
 
-    Erfasse(anfang, ende, zielort, grund);
+    Erfasse(anfang, ende, zielort, grund, this);
 
-    FluentActions.Invoking(() => Erfasse(anfang, ende, zielort, grund))
+    FluentActions.Invoking(() => Erfasse(anfang, ende, zielort, grund, this))
                  .Should()
                  .Throw<ZuEinemZeitpunktDarfNurEineReiseErfasstWerden>();
   }
 
+  [Test]
+  public void Soll_Reise_für_2021_ab_11_Januar_2022_ablehnen()
+  {
+    var anfang = DateTime.MinValue;
+    var ende = new DateTime(2021, 12, 31);
+    var zielort = "egal";
+    var grund = "egal";
+
+    ISystemClock clock = new Januar_11_2022_Clock();
+
+    FluentActions.Invoking(() => Erfasse(anfang, ende, zielort, grund, clock))
+                 .Should()
+                 .Throw<ReiseWurdeZuSpätEingereicht>();
+  }
+
+  [Test]
+  public void Soll_Reise_für_2021_bis_zum_10_Januar_2022_erfassen()
+  {
+    var anfang = DateTime.MinValue;
+    var ende = new DateTime(2021, 12, 31);
+    var zielort = "egal";
+    var grund = "egal";
+
+    var clock = A.Fake<ISystemClock>();
+    A.CallTo(() => clock.Now)
+     .Returns(new DateTime(2022, 1, 10));
+
+    Erfasse(anfang, ende, zielort, grund, clock);
+  }
+
+  class Januar_11_2022_Clock : ISystemClock
+  {
+    public DateTime Now => new(2022, 1, 11);
+  }
+
   Buchhaltung _buchhaltung = new();
 
-  void Erfasse(DateTime anfang, DateTime ende, string zielort, string grund)
+  void Erfasse(DateTime anfang, DateTime ende, string zielort, string grund, ISystemClock? systemClock)
   {
     if (ende < anfang)
     {
       throw new EndeDerReiseMussNachReisebeginnLiegen();
     }
 
+    var now = systemClock?.Now;
+    if (ende.Year == now?.AddYears(-1).Year &&
+        now.Value.Month >= 1 &&
+        now.Value.Day > 10)
+    {
+      throw new ReiseWurdeZuSpätEingereicht();
+    }
+
     _buchhaltung.ErfasseReise(anfang, ende);
   }
+}
+
+public class ReiseWurdeZuSpätEingereicht : Exception
+{
+}
+
+public interface ISystemClock
+{
+  DateTime Now => DateTime.Now;
 }
