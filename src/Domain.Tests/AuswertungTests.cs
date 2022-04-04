@@ -21,10 +21,11 @@ public class AuswertungTests : ISystemClock
     var buchhaltung = new Buchhaltung();
     buchhaltung.ErfasseReise(formular, this);
 
-    buchhaltung.First()
-               .Pauschale
-               .Should()
-               .Be(0);
+    var bericht = Auswerten(buchhaltung);
+
+    bericht.Summe
+           .Should()
+           .Be(0);
   }
 
   [Test]
@@ -39,10 +40,11 @@ public class AuswertungTests : ISystemClock
     var buchhaltung = new Buchhaltung();
     buchhaltung.ErfasseReise(formular, this);
 
-    buchhaltung.First()
-               .Pauschale
-               .Should()
-               .Be(6);
+    var bericht = Auswerten(buchhaltung);
+
+    bericht.Summe
+           .Should()
+           .Be(6);
   }
 
   [Test]
@@ -57,10 +59,11 @@ public class AuswertungTests : ISystemClock
     var buchhaltung = new Buchhaltung();
     buchhaltung.ErfasseReise(formular, this);
 
-    buchhaltung.First()
-               .Pauschale
-               .Should()
-               .Be(12);
+    var bericht = Auswerten(buchhaltung);
+
+    bericht.Summe
+           .Should()
+           .Be(12);
   }
 
   [Test]
@@ -75,10 +78,11 @@ public class AuswertungTests : ISystemClock
     var buchhaltung = new Buchhaltung();
     buchhaltung.ErfasseReise(formular, this);
 
-    buchhaltung.First()
-               .Pauschale
-               .Should()
-               .Be(24);
+    var bericht = Auswerten(buchhaltung);
+
+    bericht.Summe
+           .Should()
+           .Be(24);
   }
 
   [Test]
@@ -93,9 +97,13 @@ public class AuswertungTests : ISystemClock
     var buchhaltung = new Buchhaltung();
     buchhaltung.ErfasseReise(formular, this);
 
-    buchhaltung.First()
-               .Pauschale
-               .Should()
-               .Be(6 + 24 + 12);
+    var bericht = Auswerten(buchhaltung);
+
+    bericht.Summe
+           .Should()
+           .Be(6 + 24 + 12);
   }
+
+  static Bericht Auswerten(Buchhaltung buchhaltung)
+    => buchhaltung.ErzeugeBericht();
 }

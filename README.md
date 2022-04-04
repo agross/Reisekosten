@@ -22,3 +22,6 @@ lassen.
 
 * Ab 8 Stunden Abwesenheit erhält der Reisende täglich 6 €, ab 12 Stunden 12 € 
   und ab 24 Stunden 24 €
+* Buchhalter erhalten einen tabellarischen Bericht über:
+  * Reisen (Beginn, Zielort, Reisegrund) mit anfallender Verpflegungspauschale
+  * Summe der Verpflegungspauschale im Bericht

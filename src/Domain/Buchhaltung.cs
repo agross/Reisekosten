@@ -38,4 +38,15 @@ public class Buchhaltung : IEnumerable<Reise>
 
   IEnumerator IEnumerable.GetEnumerator()
     => ((IEnumerable) _reisen).GetEnumerator();
+
+  public Bericht ErzeugeBericht()
+  {
+    var pauschalen = this.Select(reise => new ReisePauschale(reise.Formular.Anfang,
+                                                                    reise.Formular.Ende,
+                                                                    reise.Formular.Zielort,
+                                                                    reise.Formular.Grund,
+                                                                    reise.Pauschale));
+
+    return new Bericht(pauschalen);
+  }
 }
