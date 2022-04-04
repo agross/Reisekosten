@@ -48,24 +48,6 @@ public class ErfassungTests
 
   readonly Buchhaltung _buchhaltung = new();
 
-  public class Buchhaltung : List<Reise>
-  {
-    public void ErfasseReise(DateTime anfang, DateTime ende)
-    {
-      ReiseMussDieEinzigeImZeitraumSein(anfang, ende);
-
-      Add(new Reise(anfang, ende));
-    }
-
-    void ReiseMussDieEinzigeImZeitraumSein(DateTime anfang, DateTime ende)
-    {
-      if (this.Any(reise => reise.Anfang <= anfang && reise.Ende >= ende))
-      {
-        throw new ZuEinemZeitpunktDarfNurEineReiseErfasstWerden();
-      }
-    }
-  }
-
   void Erfasse(DateTime anfang, DateTime ende, string zielort, string grund)
   {
     if (ende < anfang)
@@ -75,14 +57,4 @@ public class ErfassungTests
 
     _buchhaltung.ErfasseReise(anfang, ende);
   }
-}
-
-public record Reise(DateTime Anfang, DateTime Ende);
-
-public class EndeDerReiseMussNachReisebeginnLiegen : Exception
-{
-}
-
-public class ZuEinemZeitpunktDarfNurEineReiseErfasstWerden : Exception
-{
 }
