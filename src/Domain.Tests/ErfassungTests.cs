@@ -91,30 +91,8 @@ public class ErfassungTests : ISystemClock
 
   Buchhaltung _buchhaltung = new();
 
-  void Erfasse(DateTime anfang, DateTime ende, string zielort, string grund, ISystemClock? systemClock)
+  void Erfasse(DateTime anfang, DateTime ende, string zielort, string grund, ISystemClock clock)
   {
-    if (ende < anfang)
-    {
-      throw new EndeDerReiseMussNachReisebeginnLiegen();
-    }
-
-    var now = systemClock?.Now;
-    if (ende.Year == now?.AddYears(-1).Year &&
-        now.Value.Month >= 1 &&
-        now.Value.Day > 10)
-    {
-      throw new ReiseWurdeZuSpätEingereicht();
-    }
-
-    _buchhaltung.ErfasseReise(anfang, ende);
+    _buchhaltung.ErfasseReise(anfang, ende, clock);
   }
-}
-
-public class ReiseWurdeZuSpätEingereicht : Exception
-{
-}
-
-public interface ISystemClock
-{
-  DateTime Now => DateTime.Now;
 }
