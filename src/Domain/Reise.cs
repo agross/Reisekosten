@@ -13,22 +13,20 @@ public record Reise(Reisekostenformular Formular)
   {
     get
     {
-      var pauschale = 0m;
+      return Tageweise(Formular)
+        .Aggregate(0m,
+                   (pauschale1, tag) =>
+                   {
+                     foreach (var (predicate, summe) in ZeitZuPauschalen)
+                     {
+                       if (predicate(Dauer(tag)))
+                       {
+                         return pauschale1 + summe;
+                       }
+                     }
 
-      foreach (var tag in Tageweise(Formular))
-      {
-        foreach (var (predicate, summe) in ZeitZuPauschalen)
-        {
-          if (predicate(Dauer(tag)))
-          {
-            pauschale = pauschale + summe;
-
-            break;
-          }
-        }
-      }
-
-      return pauschale;
+                     return 0;
+                   });
     }
   }
 
