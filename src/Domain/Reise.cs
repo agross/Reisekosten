@@ -13,17 +13,50 @@ public record Reise(Reisekostenformular Formular)
   {
     get
     {
-      foreach (var (predicate, pauschale) in ZeitZuPauschalen)
+      var pauschale = 0m;
+
+      foreach (var tag in Tageweise(Formular))
       {
-        if (predicate(Dauer))
+        foreach (var (predicate, summe) in ZeitZuPauschalen)
         {
-          return pauschale;
+          if (predicate(Dauer(tag)))
+          {
+            pauschale = pauschale + summe;
+
+            break;
+          }
         }
       }
 
-      return 0;
+      return pauschale;
     }
   }
 
-  TimeSpan Dauer => Formular.Ende - Formular.Anfang;
+  IEnumerable<(DateTime anfang, DateTime ende)> Tageweise(Reisekostenformular formular)
+  {
+    var anfang = formular.Anfang;
+
+    do
+    {
+      var mitternacht = new DateTime(anfang.AddDays(1).Year,
+                                     anfang.AddDays(1).Month,
+                                     anfang.AddDays(1).Day,
+                                     00,
+                                     00,
+                                     00);
+
+      if (mitternacht > formular.Ende)
+      {
+        mitternacht = formular.Ende;
+      }
+
+      yield return (anfang, mitternacht);
+
+      anfang = mitternacht;
+    }
+    while (anfang < formular.Ende);
+  }
+
+  static TimeSpan Dauer((DateTime anfang, DateTime ende) tag)
+    => tag.ende - tag.anfang;
 }

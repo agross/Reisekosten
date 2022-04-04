@@ -80,4 +80,22 @@ public class AuswertungTests : ISystemClock
                .Should()
                .Be(24);
   }
+
+  [Test]
+  public void Soll_Pauschale_für_mehrtägige_Reise_tageweise_berechnen()
+  {
+    var anfang = new DateTime(2022, 01, 01, 16, 00, 00);
+    var ende = new DateTime(2022, 01, 03, 14, 00, 00);
+    var zielort = "egal";
+    var grund = "egal";
+    var formular = new Reisekostenformular(anfang, ende, zielort, grund);
+
+    var buchhaltung = new Buchhaltung();
+    buchhaltung.ErfasseReise(formular, this);
+
+    buchhaltung.First()
+               .Pauschale
+               .Should()
+               .Be(6 + 24 + 12);
+  }
 }
