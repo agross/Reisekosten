@@ -7,6 +7,12 @@ namespace Domain.Tests;
 [TestFixture]
 public class ErfassungTests
 {
+  [SetUp]
+  public void SetUp()
+  {
+    _buchhaltung = new Buchhaltung();
+  }
+
   [Test]
   public void Soll_Reisen_mit_Anfang_Ende_Zielort_und_Reisegrund_akzeptieren()
   {
@@ -46,7 +52,7 @@ public class ErfassungTests
                  .Throw<ZuEinemZeitpunktDarfNurEineReiseErfasstWerden>();
   }
 
-  readonly Buchhaltung _buchhaltung = new();
+  Buchhaltung _buchhaltung = new();
 
   void Erfasse(DateTime anfang, DateTime ende, string zielort, string grund)
   {
