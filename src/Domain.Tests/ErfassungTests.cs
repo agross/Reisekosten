@@ -9,6 +9,8 @@ namespace Domain.Tests;
 [TestFixture]
 public class ErfassungTests : ISystemClock
 {
+  public DateTime Now => DateTime.MinValue;
+
   [SetUp]
   public void SetUp()
   {
@@ -43,7 +45,7 @@ public class ErfassungTests : ISystemClock
   public void Soll_zu_einem_Zeitpunkt_nur_eine_Reise_akzeptieren()
   {
     var anfang = DateTime.MinValue;
-    var ende = DateTime.MaxValue;
+    var ende = DateTime.MaxValue.AddYears(-2);
     var zielort = "egal";
     var grund = "egal";
 
@@ -70,6 +72,36 @@ public class ErfassungTests : ISystemClock
   }
 
   [Test]
+  public void Soll_Reise_für_1900_am_11_Januar_2022_ablehnen()
+  {
+    var anfang = DateTime.MinValue;
+    var ende = new DateTime(1900, 1, 1);
+    var zielort = "egal";
+    var grund = "egal";
+
+    ISystemClock clock = new Januar_11_2022_Clock();
+
+    FluentActions.Invoking(() => Erfasse(new Reisekostenformular(anfang, ende, zielort, grund), clock))
+                 .Should()
+                 .Throw<ReiseWurdeZuSpätEingereicht>();
+  }
+
+  [Test]
+  public void Soll_Reise_für_1900_am_1_Januar_2022_ablehnen()
+  {
+    var anfang = DateTime.MinValue;
+    var ende = new DateTime(1900, 1, 1);
+    var zielort = "egal";
+    var grund = "egal";
+
+    ISystemClock clock = new Januar_1_2022_Clock();
+
+    FluentActions.Invoking(() => Erfasse(new Reisekostenformular(anfang, ende, zielort, grund), clock))
+                 .Should()
+                 .Throw<ReiseWurdeZuSpätEingereicht>();
+  }
+
+  [Test]
   public void Soll_Reise_für_2021_bis_zum_10_Januar_2022_erfassen()
   {
     var anfang = DateTime.MinValue;
@@ -87,6 +119,11 @@ public class ErfassungTests : ISystemClock
   class Januar_11_2022_Clock : ISystemClock
   {
     public DateTime Now => new(2022, 1, 11);
+  }
+
+  class Januar_1_2022_Clock : ISystemClock
+  {
+    public DateTime Now => new(2022, 1, 1);
   }
 
   Buchhaltung _buchhaltung = new();

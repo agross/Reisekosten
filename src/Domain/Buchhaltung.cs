@@ -25,10 +25,9 @@ public class Buchhaltung : IEnumerable<Reise>
 
   void ReisenDesVorjahresMüssenBis10JanuarErfasstWerden(DateTime ende, ISystemClock clock)
   {
-    var now = clock.Now;
+    var einzureichenBis = new DateTime(ende.AddYears(1).Year, 1, 10, 23, 59, 59);
 
-    if (ende.Year == now.AddYears(-1).Year &&
-        now.Day > 10)
+    if (clock.Now > einzureichenBis)
     {
       throw new ReiseWurdeZuSpätEingereicht();
     }
