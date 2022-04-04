@@ -6,6 +6,8 @@ using NUnit.Framework;
 
 namespace Domain.Tests;
 
+public record Reisekostenformular(DateTime Anfang, DateTime Ende, string Zielort, string Grund);
+
 [TestFixture]
 public class ErfassungTests : ISystemClock
 {
@@ -23,7 +25,7 @@ public class ErfassungTests : ISystemClock
     var zielort = "egal";
     var grund = "egal";
 
-    Erfasse(anfang, ende, zielort, grund, this);
+    Erfasse(new Reisekostenformular(anfang, ende, zielort, grund), this);
   }
 
   [Test]
@@ -34,7 +36,7 @@ public class ErfassungTests : ISystemClock
     var zielort = "egal";
     var grund = "egal";
 
-    FluentActions.Invoking(() => Erfasse(anfang, ende, zielort, grund, this))
+    FluentActions.Invoking(() => Erfasse(new Reisekostenformular(anfang, ende, zielort, grund), this))
                  .Should()
                  .Throw<EndeDerReiseMussNachReisebeginnLiegen>();
   }
@@ -47,9 +49,9 @@ public class ErfassungTests : ISystemClock
     var zielort = "egal";
     var grund = "egal";
 
-    Erfasse(anfang, ende, zielort, grund, this);
+    Erfasse(new Reisekostenformular(anfang, ende, zielort, grund), this);
 
-    FluentActions.Invoking(() => Erfasse(anfang, ende, zielort, grund, this))
+    FluentActions.Invoking(() => Erfasse(new Reisekostenformular(anfang, ende, zielort, grund), this))
                  .Should()
                  .Throw<ZuEinemZeitpunktDarfNurEineReiseErfasstWerden>();
   }
@@ -64,7 +66,7 @@ public class ErfassungTests : ISystemClock
 
     ISystemClock clock = new Januar_11_2022_Clock();
 
-    FluentActions.Invoking(() => Erfasse(anfang, ende, zielort, grund, clock))
+    FluentActions.Invoking(() => Erfasse(new Reisekostenformular(anfang, ende, zielort, grund), clock))
                  .Should()
                  .Throw<ReiseWurdeZuSpätEingereicht>();
   }
@@ -81,7 +83,7 @@ public class ErfassungTests : ISystemClock
     A.CallTo(() => clock.Now)
      .Returns(new DateTime(2022, 1, 10));
 
-    Erfasse(anfang, ende, zielort, grund, clock);
+    Erfasse(new Reisekostenformular(anfang, ende, zielort, grund), clock);
   }
 
   class Januar_11_2022_Clock : ISystemClock
@@ -91,8 +93,8 @@ public class ErfassungTests : ISystemClock
 
   Buchhaltung _buchhaltung = new();
 
-  void Erfasse(DateTime anfang, DateTime ende, string zielort, string grund, ISystemClock clock)
+  void Erfasse(Reisekostenformular formular, ISystemClock clock)
   {
-    _buchhaltung.ErfasseReise(anfang, ende, clock);
+    _buchhaltung.ErfasseReise(formular.Anfang, formular.Ende, clock);
   }
 }
