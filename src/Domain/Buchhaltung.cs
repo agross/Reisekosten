@@ -1,8 +1,6 @@
-using System.Collections;
-
 namespace Domain;
 
-public class Buchhaltung : IEnumerable<Reise>
+public class Buchhaltung
 {
   readonly List<Reise> _reisen = new();
 
@@ -16,8 +14,8 @@ public class Buchhaltung : IEnumerable<Reise>
 
   void ReiseMussDieEinzigeImZeitraumSein(DateTime anfang, DateTime ende)
   {
-    if (this.Any(reise => reise.Formular.Anfang <= anfang &&
-                          reise.Formular.Ende >= ende))
+    if (_reisen.Any(reise => reise.Formular.Anfang <= anfang &&
+                             reise.Formular.Ende >= ende))
     {
       throw new ZuEinemZeitpunktDarfNurEineReiseErfasstWerden();
     }
@@ -33,19 +31,13 @@ public class Buchhaltung : IEnumerable<Reise>
     }
   }
 
-  public IEnumerator<Reise> GetEnumerator()
-    => _reisen.GetEnumerator();
-
-  IEnumerator IEnumerable.GetEnumerator()
-    => ((IEnumerable) _reisen).GetEnumerator();
-
   public Bericht ErzeugeBericht(ITranslateCitiesToEuCountries geo)
   {
-    var pauschalen = this.Select(reise => new ReisePauschale(reise.Formular.Anfang,
-                                                             reise.Formular.Ende,
-                                                             reise.Formular.Zielort,
-                                                             reise.Formular.Grund,
-                                                             reise.Pauschale(geo)));
+    var pauschalen = _reisen.Select(reise => new ReisePauschale(reise.Formular.Anfang,
+                                                                reise.Formular.Ende,
+                                                                reise.Formular.Zielort,
+                                                                reise.Formular.Grund,
+                                                                reise.Pauschale(geo)));
 
     return new Bericht(pauschalen);
   }
