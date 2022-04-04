@@ -1,14 +1,18 @@
+using System.Collections;
+
 namespace Domain;
 
-public class Buchhaltung : List<Reise>
+public class Buchhaltung : IEnumerable<Reise>
 {
+  readonly List<Reise> _reisen = new();
+
   public void ErfasseReise(DateTime anfang, DateTime ende, ISystemClock clock)
   {
     EndeDerReiseMussNachReiseBeginnLiegen(anfang, ende);
     ReisenDesVorjahresMüssenBis10JanuarErfasstWerden(ende, clock);
     ReiseMussDieEinzigeImZeitraumSein(anfang, ende);
 
-    Add(new Reise(anfang, ende));
+    _reisen.Add(new Reise(anfang, ende));
   }
 
   void EndeDerReiseMussNachReiseBeginnLiegen(DateTime anfang, DateTime ende)
@@ -37,4 +41,10 @@ public class Buchhaltung : List<Reise>
       throw new ReiseWurdeZuSpätEingereicht();
     }
   }
+
+  public IEnumerator<Reise> GetEnumerator()
+    => _reisen.GetEnumerator();
+
+  IEnumerator IEnumerable.GetEnumerator()
+    => ((IEnumerable) _reisen).GetEnumerator();
 }
