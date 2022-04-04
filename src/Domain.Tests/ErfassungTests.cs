@@ -56,6 +56,29 @@ public class ErfassungTests : ISystemClock
                  .Throw<ZuEinemZeitpunktDarfNurEineReiseErfasstWerden>();
   }
 
+  [TestCaseSource(nameof(ZuSpätEingereichteReisen))]
+  public void Soll_zu_spät_eingereichte_Reise_ablehnen((DateTime Anfang, DateTime Ende, DateTime Now) args)
+  {
+    var zielort = "egal";
+    var grund = "egal";
+
+    var clock = A.Fake<ISystemClock>();
+    A.CallTo(() => clock.Now)
+     .Returns(args.Now);
+
+
+    FluentActions.Invoking(() => Erfasse(new Reisekostenformular(args.Anfang, args.Ende, zielort, grund), clock))
+                 .Should()
+                 .Throw<ReiseWurdeZuSpätEingereicht>();
+  }
+
+  static IEnumerable<(DateTime Anfang, DateTime Ende, DateTime Now)> ZuSpätEingereichteReisen()
+  {
+    yield return (DateTime.MinValue, new DateTime(2021, 12, 31), new DateTime(2022, 1, 11));
+    yield return (DateTime.MinValue, new DateTime(1900, 1, 1), new DateTime(2022, 1, 11));
+    yield return (DateTime.MinValue, new DateTime(1900, 1, 1), new DateTime(2022, 1, 1));
+  }
+
   [Test]
   public void Soll_Reise_für_2021_ab_11_Januar_2022_ablehnen()
   {
