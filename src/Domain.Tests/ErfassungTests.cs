@@ -6,8 +6,6 @@ using FakeItEasy;
 
 using FluentAssertions;
 
-using NUnit.Framework;
-
 namespace Domain.Tests;
 
 [TestFixture]

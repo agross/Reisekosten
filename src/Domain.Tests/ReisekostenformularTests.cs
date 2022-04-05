@@ -3,8 +3,6 @@ using Domain.Errors;
 
 using FluentAssertions;
 
-using NUnit.Framework;
-
 namespace Domain.Tests;
 
 [TestFixture]
