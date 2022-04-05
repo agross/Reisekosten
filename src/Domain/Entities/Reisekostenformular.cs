@@ -1,4 +1,6 @@
-namespace Domain;
+using Domain.Errors;
+
+namespace Domain.Entities;
 
 public record Reisekostenformular
 {

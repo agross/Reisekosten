@@ -1,8 +1,19 @@
-namespace Domain;
+using Domain.Errors;
+using Domain.Services;
+
+namespace Domain.Entities;
 
 public class Buchhaltung
 {
-  readonly List<Reise> _reisen = new();
+  List<Reise> _reisen = new();
+
+  public int Id { get; set; }
+
+  public IEnumerable<Reise> Reisen
+  {
+    get => _reisen;
+    private set => _reisen = new List<Reise>(value);
+  }
 
   public void ErfasseReise(Reisekostenformular formular, ISystemClock clock)
   {
@@ -14,8 +25,8 @@ public class Buchhaltung
 
   void ReiseMussDieEinzigeImZeitraumSein(DateTime anfang, DateTime ende)
   {
-    if (_reisen.Any(reise => reise.Formular.Anfang <= anfang &&
-                             reise.Formular.Ende >= ende))
+    if (Reisen.Any(reise => reise.Formular.Anfang <= anfang &&
+                            reise.Formular.Ende >= ende))
     {
       throw new ZuEinemZeitpunktDarfNurEineReiseErfasstWerden();
     }
@@ -33,11 +44,11 @@ public class Buchhaltung
 
   public Bericht ErzeugeBericht(ITranslateCitiesToEuCountries geo)
   {
-    var pauschalen = _reisen.Select(reise => new ReisePauschale(reise.Formular.Anfang,
-                                                                reise.Formular.Ende,
-                                                                reise.Formular.Zielort,
-                                                                reise.Formular.Grund,
-                                                                reise.Pauschale(geo)));
+    var pauschalen = Reisen.Select(reise => new ReisePauschale(reise.Formular.Anfang,
+                                                               reise.Formular.Ende,
+                                                               reise.Formular.Zielort,
+                                                               reise.Formular.Grund,
+                                                               reise.Pauschale(geo)));
 
     return new Bericht(pauschalen);
   }

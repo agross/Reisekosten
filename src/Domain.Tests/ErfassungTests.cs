@@ -1,4 +1,8 @@
-﻿using FakeItEasy;
+﻿using Domain.Entities;
+using Domain.Errors;
+using Domain.Services;
+
+using FakeItEasy;
 
 using FluentAssertions;
 

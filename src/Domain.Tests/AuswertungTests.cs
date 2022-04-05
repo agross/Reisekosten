@@ -1,3 +1,6 @@
+using Domain.Entities;
+using Domain.Services;
+
 using FakeItEasy;
 
 using FluentAssertions;

@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Domain;
+namespace Domain.Entities;
 
 public class Bericht : IEnumerable<ReisePauschale>
 {

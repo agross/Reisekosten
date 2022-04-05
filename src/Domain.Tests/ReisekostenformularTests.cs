@@ -1,3 +1,6 @@
+using Domain.Entities;
+using Domain.Errors;
+
 using FluentAssertions;
 
 using NUnit.Framework;

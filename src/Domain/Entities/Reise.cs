@@ -1,6 +1,7 @@
 using Domain.Pauschalen;
+using Domain.Services;
 
-namespace Domain;
+namespace Domain.Entities;
 
 public record Reise(Reisekostenformular Formular)
 {
