@@ -1,3 +1,5 @@
+using System.Formats.Asn1;
+
 using Domain.Services;
 
 using Ductus.FluentDocker.Builders;
@@ -17,9 +19,9 @@ namespace Application.IntegrationTests;
 [SetUpFixture]
 public class Testing
 {
-  static IConfigurationRoot _configuration = null!;
-  static IServiceScopeFactory _scopeFactory = null!;
-  IContainerService _postgres;
+  internal static IServiceScopeFactory ScopeFactory = null!;
+  IConfigurationRoot _configuration = null!;
+  IContainerService _postgres = null!;
 
   [OneTimeSetUp]
   public void RunBeforeAllTests()
@@ -47,8 +49,8 @@ public class Testing
     services.AddSingleton<ISystemClock, SystemClock>();
     services.AddSingleton<ITranslateCitiesToEuCountries, AlwaysInsideEu>();
 
-    _scopeFactory = services.BuildServiceProvider()
-                            .GetRequiredService<IServiceScopeFactory>();
+    ScopeFactory = services.BuildServiceProvider()
+                           .GetRequiredService<IServiceScopeFactory>();
   }
 
   void RunDatabaseWithDocker()
@@ -74,10 +76,17 @@ public class Testing
     _postgres?.Dispose();
   }
 
-  public static async Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
+  public static void SetBuchhaltungIdForTesting(int buchhaltungId,
+                                                IServiceScope scope)
   {
-    using var scope = _scopeFactory.CreateScope();
+    var repo = scope.ServiceProvider.GetRequiredService<IBuchhaltungRepository>();
 
+    ((BuchhaltungRepository) repo).SetBuchhaltungIdForTesting(buchhaltungId);
+  }
+
+  public static async Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request,
+                                                           IServiceScope scope)
+  {
     var mediator = scope.ServiceProvider.GetRequiredService<ISender>();
 
     return await mediator.Send(request);
@@ -85,7 +94,7 @@ public class Testing
 
   public static async Task AddAsync<T>(T obj) where T : notnull
   {
-    using var scope = _scopeFactory.CreateScope();
+    using var scope = ScopeFactory.CreateScope();
 
     var session = scope.ServiceProvider.GetRequiredService<IDocumentSession>();
 
@@ -96,7 +105,7 @@ public class Testing
 
   public static async Task<T?> LoadAsync<T>(int id) where T : notnull
   {
-    using var scope = _scopeFactory.CreateScope();
+    using var scope = ScopeFactory.CreateScope();
 
     var session = scope.ServiceProvider.GetRequiredService<IDocumentSession>();
 
