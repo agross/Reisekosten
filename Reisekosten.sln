@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.IntegrationTest
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "src\Web\Web.csproj", "{64629970-1C74-4743-9B09-D1039DFCB53E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.ProviderTests", "src\Web.ProviderTests\Web.ProviderTests.csproj", "{DB11A1A1-E8E3-4B95-A5A7-56A796A193BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{0AA7491C-AE2D-423A-B0D0-17D4D0291217}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,5 +51,13 @@ Global
 		{64629970-1C74-4743-9B09-D1039DFCB53E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64629970-1C74-4743-9B09-D1039DFCB53E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64629970-1C74-4743-9B09-D1039DFCB53E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB11A1A1-E8E3-4B95-A5A7-56A796A193BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB11A1A1-E8E3-4B95-A5A7-56A796A193BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB11A1A1-E8E3-4B95-A5A7-56A796A193BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB11A1A1-E8E3-4B95-A5A7-56A796A193BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AA7491C-AE2D-423A-B0D0-17D4D0291217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AA7491C-AE2D-423A-B0D0-17D4D0291217}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AA7491C-AE2D-423A-B0D0-17D4D0291217}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AA7491C-AE2D-423A-B0D0-17D4D0291217}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
