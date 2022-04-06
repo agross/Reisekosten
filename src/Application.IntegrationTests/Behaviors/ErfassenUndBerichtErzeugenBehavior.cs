@@ -147,7 +147,7 @@ public class BerichtDsl
 
     var bericht = await Testing.SendAsync(query, _behavior.Scope);
 
-    bericht.Should().HaveCount(anzahl);
+    bericht.Reisen.Should().HaveCount(anzahl);
   }
 
   public async Task MitSumme(decimal summe)

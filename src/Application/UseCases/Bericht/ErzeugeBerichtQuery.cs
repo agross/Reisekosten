@@ -4,11 +4,11 @@ using MediatR;
 
 namespace Application.UseCases.Bericht;
 
-public class ErzeugeBerichtQuery : IRequest<Domain.Entities.Bericht>
+public class ErzeugeBerichtQuery : IRequest<BerichtViewModel>
 {
 }
 
-public class ErzeugeBerichtQueryHandler : IRequestHandler<ErzeugeBerichtQuery, Domain.Entities.Bericht>
+public class ErzeugeBerichtQueryHandler : IRequestHandler<ErzeugeBerichtQuery, BerichtViewModel>
 {
   readonly IBuchhaltungRepository _db;
   readonly ITranslateCitiesToEuCountries _geo;
@@ -19,10 +19,24 @@ public class ErzeugeBerichtQueryHandler : IRequestHandler<ErzeugeBerichtQuery, D
     _geo = geo;
   }
 
-  public async Task<Domain.Entities.Bericht> Handle(ErzeugeBerichtQuery request, CancellationToken cancellationToken)
+  public async Task<BerichtViewModel> Handle(ErzeugeBerichtQuery request,
+                                             CancellationToken cancellationToken)
   {
     var buchhaltung = await _db.LoadBuchhaltung();
 
-    return buchhaltung.ErzeugeBericht(_geo);
+    var bericht = buchhaltung.ErzeugeBericht(_geo);
+
+    return new BerichtViewModel
+    {
+      Summe = bericht.Summe,
+      Reisen = bericht.Select(r => new ReiseViewModel
+      {
+        Anfang = r.Anfang.ToLocalTime(),
+        Ende = r.Ende.ToLocalTime(),
+        Grund = r.Grund,
+        Zielort = r.Zielort,
+        Pauschale = r.Pauschale,
+      }),
+    };
   }
 }
