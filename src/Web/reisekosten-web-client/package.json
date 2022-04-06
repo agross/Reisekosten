@@ -6,17 +6,24 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "test:pact": "vue-cli-service test:unit --runInBand --testMatch **/*.pact.ts",
+    "lint": "vue-cli-service lint",
+    "pact:publish": "pact-broker publish pact/pacts --consumer-app-version=\"$(npx @pact-foundation/absolute-version)\" --auto-detect-version-properties --broker-base-url=https://pact.grossweber.com",
+    "pact:can-i-deploy": "pact-broker can-i-deploy --pacticipant 'Reisekosten Web UI' --latest --broker-base-url=https://pact.grossweber.com"
   },
   "dependencies": {
+    "@pact-foundation/pact": "^9.17.3",
     "axios": "^0.26.1",
     "core-js": "^3.8.3",
+    "jest-pact": "^0.9.3",
     "vue": "^3.2.13",
     "vue-class-component": "^8.0.0-0",
     "vue-property-decorator": "^9.1.2"
   },
   "devDependencies": {
-    "@types/jest": "^27.0.1",
+    "@pact-foundation/absolute-version": "^0.0.4",
+    "@types/jest": "^27.4.1",
+    "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "@vue/cli-plugin-babel": "~5.0.0",
@@ -31,6 +38,7 @@
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
     "jest": "^27.0.5",
+    "supertest": "^6.2.2",
     "ts-jest": "^27.0.4",
     "typescript": "~4.5.5"
   }

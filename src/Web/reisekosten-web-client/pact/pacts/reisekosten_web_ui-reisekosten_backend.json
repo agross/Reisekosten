@@ -1,0 +1,138 @@
+{
+  "consumer": {
+    "name": "Reisekosten Web UI"
+  },
+  "provider": {
+    "name": "Reisekosten Backend"
+  },
+  "interactions": [
+    {
+      "description": "Reisekostenformular mit Daten",
+      "providerState": "Buchhaltung ohne Einträge",
+      "request": {
+        "method": "POST",
+        "path": "/erfassen",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "anfang": "2015-08-06T16:53:10.123+01:00",
+          "ende": "2015-08-06T16:53:10.123+01:00",
+          "zielort": "Zielort",
+          "grund": "Grund"
+        },
+        "matchingRules": {
+          "$.body.anfang": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d(:?[0-5]\\d)?|Z)$"
+          },
+          "$.body.ende": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d(:?[0-5]\\d)?|Z)$"
+          },
+          "$.body.zielort": {
+            "match": "type"
+          },
+          "$.body.grund": {
+            "match": "type"
+          }
+        }
+      },
+      "response": {
+        "status": 202,
+        "headers": {
+        }
+      }
+    },
+    {
+      "description": "Anforderung zur Auswertung",
+      "providerState": "Buchhaltung ohne Einträge",
+      "request": {
+        "method": "GET",
+        "path": "/auswertung",
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "summe": 0,
+          "reisen": [
+
+          ]
+        }
+      }
+    },
+    {
+      "description": "Anforderung zur Auswertung",
+      "providerState": "Buchhaltung mit 2 Einträgen",
+      "request": {
+        "method": "GET",
+        "path": "/auswertung",
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "summe": 18,
+          "reisen": [
+            {
+              "anfang": "2015-08-06T16:53:10+01:00",
+              "grund": "Grund 1",
+              "zielort": "Zielort 1",
+              "pauschale": 6
+            },
+            {
+              "anfang": "2015-08-06T16:53:10+01:00",
+              "grund": "Grund 2",
+              "zielort": "Zielort 2",
+              "pauschale": 12
+            }
+          ]
+        },
+        "matchingRules": {
+          "$.body.summe": {
+            "match": "type"
+          },
+          "$.body.reisen": {
+            "match": "type"
+          },
+          "$.body.reisen[0].anfang": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d:[0-5]\\d|Z)$"
+          },
+          "$.body.reisen[0].grund": {
+            "match": "type"
+          },
+          "$.body.reisen[0].zielort": {
+            "match": "type"
+          },
+          "$.body.reisen[1].anfang": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d([+-][0-2]\\d:[0-5]\\d|Z)$"
+          },
+          "$.body.reisen[1].grund": {
+            "match": "type"
+          },
+          "$.body.reisen[1].zielort": {
+            "match": "type"
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}
