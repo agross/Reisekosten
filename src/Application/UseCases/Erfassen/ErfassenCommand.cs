@@ -27,8 +27,8 @@ public class ErfassenCommandHandler : IRequestHandler<ErfassenCommand>
 
     var formular = new Reisekostenformular(request.Anfang,
                                            request.Ende,
-                                           request.Grund,
-                                           request.Zielort);
+                                           request.Zielort,
+                                           request.Grund);
 
     buchhaltung.ErfasseReise(formular, _clock);
 
