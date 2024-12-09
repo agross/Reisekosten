@@ -1,4 +1,3 @@
-import { Bericht, Reise } from '@/model';
 import { InteractionObject, Matchers } from '@pact-foundation/pact';
 import { pactWith } from 'jest-pact';
 import supertest from 'supertest';

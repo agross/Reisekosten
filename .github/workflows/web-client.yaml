@@ -5,22 +5,18 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version:
-          - 16
 
     defaults:
       run:
         working-directory: src/Web/reisekosten-web-client/
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: .node-version
           cache: yarn
           cache-dependency-path: |
             src/Web/reisekosten-web-client/yarn.lock
