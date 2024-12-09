@@ -8,20 +8,20 @@ jobs:
     strategy:
       matrix:
         dotnet-version:
-          - 6.x
+          - 9.x
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK ${{ matrix.dotnet-version }}
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
 
       - name: Display dotnet version
         run: dotnet --version
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
           # Look to see if there is a cache hit for the corresponding requirements file
@@ -40,7 +40,7 @@ jobs:
           dotnet test --no-restore --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}"
 
       - name: Upload dotnet test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dotnet-test-results-${{ matrix.dotnet-version }}
           path: TestResults-${{ matrix.dotnet-version }}

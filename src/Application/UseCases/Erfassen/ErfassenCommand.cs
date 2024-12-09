@@ -21,7 +21,7 @@ public class ErfassenCommandHandler : IRequestHandler<ErfassenCommand>
     _db = db;
   }
 
-  public async Task<Unit> Handle(ErfassenCommand request, CancellationToken cancellationToken)
+  public async Task Handle(ErfassenCommand request, CancellationToken cancellationToken)
   {
     var buchhaltung = await _db.LoadBuchhaltung();
 
@@ -33,7 +33,5 @@ public class ErfassenCommandHandler : IRequestHandler<ErfassenCommand>
     buchhaltung.ErfasseReise(formular, _clock);
 
     await _db.SaveChangesAsync();
-
-    return Unit.Value;
   }
 }

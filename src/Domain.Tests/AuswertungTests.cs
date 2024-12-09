@@ -132,8 +132,10 @@ public class AuswertungTests : ISystemClock, ITranslateCitiesToEuCountries
     // For more complex data structures, Verify is a good tool.
     VerifierSettings.TreatAsString<DateTime>((dt, _) => dt.ToString("O"));
 
-    return Verify(bericht)
-      .ModifySerialization(_ => _.DontScrubDateTimes());
+    var settings = new VerifySettings();
+    settings.DontScrubDateTimes();
+
+    return Verify(bericht, settings);
   }
 
   [Test]

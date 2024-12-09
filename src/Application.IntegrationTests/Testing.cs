@@ -1,5 +1,3 @@
-using System.Formats.Asn1;
-
 using Domain.Services;
 
 using Ductus.FluentDocker.Builders;
@@ -61,8 +59,8 @@ public class Testing
                 .ExposePort(5432, 5432)
                 .WaitForPort("5432/tcp", TimeSpan.FromSeconds(30))
                 .WithEnvironment("POSTGRES_DB=ReisekostenTestDb",
-                                 "POSTGRES_USER=postgres",
-                                 "POSTGRES_PASSWORD=secret-123")
+                  "POSTGRES_USER=postgres",
+                  "POSTGRES_PASSWORD=secret-123")
                 .RemoveVolumesOnDispose()
                 .UseHealthCheck("\"pg_isready -U postgres\"", startPeriod: "1s", interval: "1s")
                 .WaitForHealthy()
@@ -90,6 +88,14 @@ public class Testing
     var mediator = scope.ServiceProvider.GetRequiredService<ISender>();
 
     return await mediator.Send(request);
+  }
+
+  public static async Task SendAsync(IRequest request,
+                                     IServiceScope scope)
+  {
+    var mediator = scope.ServiceProvider.GetRequiredService<ISender>();
+
+    await mediator.Send(request);
   }
 
   public static async Task AddAsync<T>(T obj) where T : notnull

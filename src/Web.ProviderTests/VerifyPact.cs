@@ -51,8 +51,8 @@ public class VerifyPact
     var config = new PactVerifierConfig();
 
     // Act / Assert
-    new PactVerifier(config)
-      .ServiceProvider("Reisekosten Backend", BackendUri)
+    new PactVerifier("Reisekosten Backend")
+      .WithHttpEndpoint(BackendUri)
       .WithPactBrokerSource(new Uri("https://pact.grossweber.com"),
                             options =>
                             {
