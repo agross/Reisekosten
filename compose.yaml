@@ -1,0 +1,16 @@
+volumes:
+  db:
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret-123
+      POSTGRES_DB: ReisekostenTestDb
+      POSTGRES_INITDB_ARGS: --locale-provider=icu --icu-locale=de-DE
+      TZ: Europe/Berlin
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
